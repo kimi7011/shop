@@ -1,221 +1,90 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>商品管理表單</title>
-
-  <style>
-
-    body {
-
-      font-family: Arial, sans-serif;
-
-    }
-
-    form {
-
-      margin: 20px auto;
-
-      max-width: 500px;
-
-      padding: 10px;
-
-      border: 1px solid #ccc;
-
-      border-radius: 5px;
-
-    }
-
-    .form-group {
-
-      margin-bottom: 15px;
-
-    }
-
-    label {
-
-      display: block;
-
-      margin-bottom: 5px;
-
-    }
-
-    input {
-
-      width: 100%;
-
-      padding: 8px;
-
-      box-sizing: border-box;
-
-    }
-
-    button {
-
-      margin-top: 10px;
-
-    }
-
-  </style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品表單</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            text-align: center;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
-
 <body>
-
-  <h2>商品管理表單</h2>
-
-  <form id="product-form">
-
-    <div class="form-group">
-
-      <label for="productName">商品名稱</label>
-
-      <input type="text" id="productName" name="productName" required>
-
-    </div>
-
-    <div class="form-group">
-
-      <label for="price">價格</label>
-
-      <input type="number" id="price" name="price" required>
-
-    </div>
-
-    <div class="form-group">
-
-      <label for="quantity">數量</label>
-
-      <input type="number" id="quantity" name="quantity" required>
-
-    </div>
-
-    <button type="button" onclick="addProduct()">新增商品</button>
-
-    <button type="button" onclick="deleteProduct()">刪除商品</button>
-
-  </form>
-
-  <script>
-
-    function addProduct() {
-
-      const productName = document.getElementById('productName').value;
-
-      const price = document.getElementById('price').value;
-
-      const quantity = document.getElementById('quantity').value;
-
-
-
-      if (productName && price && quantity) {
-
-        fetch('https://script.google.com/macros/s/AKfycbyRsaGKQcXt9UGYiMLMBmSWWXQlX0WgR2a7X8VHKs1k_LSmbfrPsHi3j1_zyPm7oexqnQ/exec', {
-
-          method: 'POST',
-
-          headers: {
-
-            'Content-Type': 'application/json',
-
-          },
-
-          body: JSON.stringify({
-
-            action: 'add',
-
-            productName,
-
-            price,
-
-            quantity,
-
-          }),
-
-        })
-
-        .then(response => response.json())
-
-        .then(data => {
-
-          alert(data.message);
-
-        })
-
-        .catch(error => {
-
-          console.error('Error:', error);
-
-        });
-
-      } else {
-
-        alert('請填寫所有欄位');
-
-      }
-
-    }
-
-
-
-    function deleteProduct() {
-
-      const productName = document.getElementById('productName').value;
-
-
-
-      if (productName) {
-
-        fetch('https://script.google.com/macros/s/AKfycbyRsaGKQcXt9UGYiMLMBmSWWXQlX0WgR2a7X8VHKs1k_LSmbfrPsHi3j1_zyPm7oexqnQ/exec', {
-
-          method: 'POST',
-
-          headers: {
-
-            'Content-Type': 'application/json',
-
-          },
-
-          body: JSON.stringify({
-
-            action: 'delete',
-
-            productName,
-
-          }),
-
-        })
-
-        .then(response => response.json())
-
-        .then(data => {
-
-          alert(data.message);
-
-        })
-
-        .catch(error => {
-
-          console.error('Error:', error);
-
-        });
-
-      } else {
-
-        alert('請輸入要刪除的商品名稱');
-
-      }
-
-    }
-
-  </script>
-
+    <h1>商品訂購表單</h1>
+    <form id="productForm">
+        <table>
+            <tr>
+                <th>商品名稱</th>
+                <th>價格</th>
+                <th>數量</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="productName" value="咖啡豆" readonly></td>
+                <td><input type="number" name="price" value="300" readonly></td>
+                <td><input type="number" name="quantity" value="0" min="1"></td>
+            </tr>
+        </table>
+        <button type="button" onclick="submitForm()">送出表單</button>
+    </form>
+    <p id="responseMessage" style="color: green; font-weight: bold;"></p>
+    <script>
+        async function submitForm() {
+            const form = document.getElementById('productForm');
+            const formData = new FormData(form);
+            const data = {
+                productName: formData.get('productName'),
+                price: formData.get('price'),
+                quantity: formData.get('quantity'),
+            };
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbwENS6Ioek5mMjKLfwtKXBCmoPHbf3Be8YNWo0yLSSnqed_KHCgO_b6ZLDZL6Fe3p2aqQ/exec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    document.getElementById('responseMessage').textContent = '表單已成功送出！';
+                } else {
+                    document.getElementById('responseMessage').textContent = '送出失敗，請稍後再試。';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('responseMessage').textContent = '發生錯誤，請檢查網路或伺服器設定。';
+            }
+        }
+    </script>
 </body>
-
 </html>
