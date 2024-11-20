@@ -58,27 +58,31 @@
     </form>
     <p id="responseMessage"></p>
     <script>
-      async function submitForm() {
-          const form = document.getElementById('productForm');
-          const formData = new FormData(form);
-      
-          try {
-              const response = await fetch('https://script.google.com/macros/s/AKfycbwoXpP_0420ePdpFjgep_O4q8UEubQLqhYz1hxMVM2WrvYyxPjfSuM3BepG1cIzFtrjnQ/exec', {
-                  method: 'POST',
-                  body: new URLSearchParams(formData),
-              });
-      
-              const result = await response.text();
-              const messageElement = document.getElementById('responseMessage');
-              messageElement.textContent = result;
-              messageElement.style.color = result.includes("成功") ? "green" : "red";
-          } catch (error) {
-              console.error('Error:', error);
-              const messageElement = document.getElementById('responseMessage');
-              messageElement.textContent = '無法連接伺服器，請稍後再試。';
-              messageElement.style.color = 'red';
-          }
-      }
-      </script>      
+        async function submitForm() {
+            const form = document.getElementById('productForm');
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbxXaX_wD-1_S29xxkQ_NDlue-_xTKu-yGrthHTFDDOwiJ4F7sIA91FyjHxy3jWfnNzIIw/exec', {
+                    method: 'POST',
+                    body: new URLSearchParams(formData),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP 錯誤！狀態碼：${response.status}`);
+                }
+
+                const result = await response.text();
+                const messageElement = document.getElementById('responseMessage');
+                messageElement.textContent = result;
+                messageElement.style.color = result.includes("成功") ? "green" : "red";
+            } catch (error) {
+                console.error('錯誤：', error);
+                const messageElement = document.getElementById('responseMessage');
+                messageElement.textContent = '發生錯誤，請稍後再試：' + error.message;
+                messageElement.style.color = 'red';
+            }
+        }
+    </script>      
 </body>
 </html>
